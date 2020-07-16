@@ -1,0 +1,6 @@
+module Pods_TwitterCloneAdamKramar {
+  umbrella header "Pods-TwitterCloneAdamKramar-umbrella.h"
+
+  export *
+  module * { export * }
+}
