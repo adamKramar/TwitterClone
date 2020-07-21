@@ -7,10 +7,18 @@
 //
 
 import UIKit
+import SnapKit
+import SDWebImage
 
 class FeedViewController: UIViewController {
     
     // MARK: - Properties
+    
+    var user: User? {
+        didSet {
+            configureLeftBarButton()
+        }
+    }
     
     // MARK: - Lyfecycle
 
@@ -20,14 +28,32 @@ class FeedViewController: UIViewController {
         configureUI()
     }
     
-    // MARK: - Helpers
+    // MARK: - UI Configuration
     
     func configureUI() {
         
         view.backgroundColor = .white
-        
-        let imageView = UIImageView(image: UIImage(named: "twitter_logo_blue"))
+        let imageView = UIImageView(image: UIImage(named: K.IMAGE.TWITTER_LOGO))
         imageView.contentMode = .scaleAspectFit
+        imageView.snp.makeConstraints { (make) in
+            make.height.width.equalTo(44)
+        }
         navigationItem.titleView = imageView
     }
+    
+    func configureLeftBarButton() {
+        
+        guard let user = user else { return }
+        let profileImageView = UIImageView()
+        profileImageView.snp.makeConstraints { (make) in
+            make.width.height.equalTo(32)
+        }
+        profileImageView.layer.cornerRadius = 32 / 2
+        profileImageView.layer.masksToBounds = true
+        profileImageView.sd_setImage(with: user.profileImageUrl, completed: nil)
+        
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: profileImageView)
+    }
+    
+    // MARK: - Helpers
 }

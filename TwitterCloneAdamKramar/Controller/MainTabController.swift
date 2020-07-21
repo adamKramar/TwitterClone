@@ -14,11 +14,20 @@ class MainTabController: UITabBarController {
     
     // MARK: - Properties
     
+    var user: User? {
+        didSet {
+            guard let nav = viewControllers?[0] as? UINavigationController else { return }
+            guard let feed = nav.viewControllers.first as? FeedViewController else { return }
+            
+            feed.user = user
+        }
+    }
+    
     let actionButton: UIButton = {
         let button = UIButton(type: .system)
         button.tintColor = .white
         button.backgroundColor = .twitterBlue
-        button.setImage(UIImage(named: "new_tweet"), for: .normal)
+        button.setImage(UIImage(named: K.IMAGE.NEW_TWEET), for: .normal)
         button.addTarget(self, action: #selector(handleActionButtonPressed), for: .touchUpInside)
         
         return button
@@ -30,11 +39,16 @@ class MainTabController: UITabBarController {
         super.viewDidLoad()
         
         view.backgroundColor = .twitterBlue
-        //logUserOut()
         authenticateUserAndConfigureUI()
     }
     
     // MARK: - API
+    
+    func fetchUser() {
+        UserService.shared.fetchUser { (user) in
+            self.user = user
+        }
+    }
     
     func authenticateUserAndConfigureUI() {
         if Auth.auth().currentUser == nil {
@@ -47,6 +61,7 @@ class MainTabController: UITabBarController {
             print("DEBUG: User is logged in.")
             configeruViewControllers()
             configureUI()
+            fetchUser()
         }
     }
     
@@ -61,7 +76,10 @@ class MainTabController: UITabBarController {
     // MARK: - Handlers
     
     @objc func handleActionButtonPressed() {
-        
+        guard let user = user else { return }
+        let viewController = UploadTweetViewController(user: user)
+        let nav = UINavigationController(rootViewController: viewController)
+        present(nav, animated: true, completion: nil)
     }
     
     // MARK: - UI Configuration
@@ -81,16 +99,16 @@ class MainTabController: UITabBarController {
     func configeruViewControllers() {
         
         let feed = FeedViewController()
-        let nav1 = templateNavigationController(image: UIImage(named: "home_unselected"), rootViewController: feed)
+        let nav1 = templateNavigationController(image: UIImage(named: K.IMAGE.FEED_ICON), rootViewController: feed)
         
         let explore = ExploreViewController()
-        let nav2 = templateNavigationController(image: UIImage(named: "search_unselected"), rootViewController: explore)
+        let nav2 = templateNavigationController(image: UIImage(named: K.IMAGE.EXPLORE_ICON), rootViewController: explore)
         
         let notifications = NotificationsViewController()
-        let nav3 = templateNavigationController(image: UIImage(named: "like_unselected"), rootViewController: notifications)
+        let nav3 = templateNavigationController(image: UIImage(named: K.IMAGE.NOTIFICATINS_ICON), rootViewController: notifications)
         
         let conversations = ConversationsViewController()
-        let nav4 = templateNavigationController(image: UIImage(named: "ic_mail_outline_white_2x-1"), rootViewController: conversations)
+        let nav4 = templateNavigationController(image: UIImage(named: K.IMAGE.CONVERSATIONS_ICON), rootViewController: conversations)
         
         viewControllers = [nav1, nav2, nav3, nav4]
     }
