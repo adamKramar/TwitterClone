@@ -20,7 +20,7 @@ class ExploreViewController: UIViewController {
         configureUI()
     }
     
-    // MARK: - Helpers
+    // MARK: - UI Configuration
     
     func configureUI() {
         

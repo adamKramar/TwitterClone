@@ -24,4 +24,20 @@ struct TweetService {
         
         K.REF_TWEETS.childByAutoId().updateChildValues(values, withCompletionBlock: completition)
     }
+    
+    func fetchTweets(completition: @escaping([Tweet]) -> ()) {
+        var tweets = [Tweet]()
+        
+        K.REF_TWEETS.observe(.childAdded) { (snapshot) in
+            guard let dictionary = snapshot.value as? [String: Any] else { return }
+            guard let uid = dictionary[K.DB.F_UID] as? String else { return }
+            let tweetID = snapshot.key
+            
+            UserService.shared.fetchUser(uid: uid) { (user) in
+                let tweet = Tweet(user: user ,tweetID: tweetID, dictionary: dictionary)
+                tweets.append(tweet)
+                completition(tweets)
+            }
+        }
+    }
 }

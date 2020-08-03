@@ -12,9 +12,7 @@ struct UserService {
     
     static let shared = UserService()
     
-    func fetchUser(completiton: @escaping(User) -> ()) {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        
+    func fetchUser(uid: String, completiton: @escaping(User) -> ()) {
         K.REF_USERS.child(uid).observeSingleEvent(of: .value) { (snapshot) in
             guard let dictionary = snapshot.value as? [String: AnyObject] else { return }
             let user = User(withId: uid, userInfo: dictionary)

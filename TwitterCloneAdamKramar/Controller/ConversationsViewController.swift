@@ -20,7 +20,7 @@ class ConversationsViewController: UIViewController {
         configureUI()
     }
     
-    // MARK: - Helpers
+    // MARK: - UI Configuration
     
     func configureUI() {
         

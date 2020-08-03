@@ -87,4 +87,16 @@ struct Utilities {
         
         return button
     }
+    
+    func actionButton(withImageNamed imageName: String) -> UIButton {
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(named: imageName), for: .normal)
+        button.tintColor = .darkGray
+        
+        button.snp.makeConstraints { (make) in
+            make.height.width.equalTo(20)
+        }
+        
+        return button
+    }
 }

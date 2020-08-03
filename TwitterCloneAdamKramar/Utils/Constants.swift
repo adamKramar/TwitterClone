@@ -17,6 +17,11 @@ struct K {
     static let STORAGE_REF = Storage.storage().reference()
     static let STORAGE_PROFILE_IMAGES = K.STORAGE_REF.child("profile_images")
     
+    struct ID {
+        static let TWEET_CELL_ID = "tweetCellID"
+        static let PROFILE_HEADER_ID = "profileHeaderID"
+    }
+    
     struct DB {
         //register/login
         static let F_EMAIL = "email"
@@ -40,6 +45,10 @@ struct K {
         static let NEW_TWEET = "new_tweet"
         //Feed
         static let TWITTER_LOGO = "twitter_logo_blue"
+        static let COMMENT_ICON = "comment"
+        static let RETWEET_ICON = "retweet"
+        static let LIKE_ICON = "like"
+        static let SHARE_ICON = "share"
     }
     
 }

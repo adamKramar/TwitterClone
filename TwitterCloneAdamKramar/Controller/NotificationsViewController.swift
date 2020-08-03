@@ -20,7 +20,7 @@ class NotificationsViewController: UIViewController {
         configureUI()
     }
     
-    // MARK: - Helpers
+    // MARK: - UI Configuration
     
     func configureUI() {
         

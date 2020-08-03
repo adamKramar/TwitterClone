@@ -10,7 +10,7 @@ import UIKit
 import SnapKit
 import SDWebImage
 
-class FeedViewController: UIViewController {
+class FeedViewController: UICollectionViewController {
     
     // MARK: - Properties
     
@@ -20,19 +20,37 @@ class FeedViewController: UIViewController {
         }
     }
     
+    private var tweets = [Tweet]() {
+        didSet {
+            collectionView.reloadData()
+        }
+    }
+    
     // MARK: - Lyfecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         configureUI()
+        fetchTweets()
+    }
+    
+    // MARK: - API
+    
+    func fetchTweets() {
+        TweetService.shared.fetchTweets { (tweets) in
+            self.tweets = tweets
+        }
     }
     
     // MARK: - UI Configuration
     
     func configureUI() {
-        
         view.backgroundColor = .white
+        
+        collectionView.register(TweetCell.self, forCellWithReuseIdentifier: K.ID.TWEET_CELL_ID)
+        collectionView.backgroundColor = .white
+        
         let imageView = UIImageView(image: UIImage(named: K.IMAGE.TWITTER_LOGO))
         imageView.contentMode = .scaleAspectFit
         imageView.snp.makeConstraints { (make) in
@@ -54,6 +72,41 @@ class FeedViewController: UIViewController {
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: profileImageView)
     }
+}
+
+// MARK: UICollectionViewDelegate, UICollectionViewDataSource
+
+extension FeedViewController {
     
-    // MARK: - Helpers
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return tweets.count
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: K.ID.TWEET_CELL_ID, for: indexPath) as! TweetCell
+        cell.tweet = tweets[indexPath.row]
+        cell.delegate = self
+        
+        return cell
+    }
+}
+
+// MARK: - UICollectionViewFlowLayout
+
+extension FeedViewController: UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: view.frame.width, height: 120)
+    }
+}
+
+// MARK: - TweetCellDelegate
+
+extension FeedViewController: TweetCellDelegate {
+    
+    func didTapProfileImage(_ cell: TweetCell) {
+        let viewController = ProfileViewController(collectionViewLayout: UICollectionViewFlowLayout())
+        navigationController?.pushViewController(viewController, animated: true)
+    }
+
 }
