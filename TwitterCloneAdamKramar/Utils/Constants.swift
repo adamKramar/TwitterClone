@@ -19,6 +19,7 @@ struct K {
     
     struct ID {
         static let TWEET_CELL_ID = "tweetCellID"
+        static let PROFILE_FILTER_CELL_ID = "profileFilterCellID"
         static let PROFILE_HEADER_ID = "profileHeaderID"
     }
     

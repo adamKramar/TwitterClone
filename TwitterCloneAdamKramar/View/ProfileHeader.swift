@@ -13,6 +13,8 @@ class ProfileHeader: UICollectionReusableView {
     
     // MARK: - Properties
     
+    private let filterBar = ProfileFilterView()
+    
     private lazy var containerView: UIView = {
         let view = UIView()
         view.backgroundColor = .twitterBlue
@@ -83,6 +85,13 @@ class ProfileHeader: UICollectionReusableView {
         return label
     }()
     
+    private let underlineView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .twitterBlue
+        
+        return view
+    }()
+    
     // MARK: - Lifecycle
     
     override init(frame: CGRect) {
@@ -121,6 +130,20 @@ class ProfileHeader: UICollectionReusableView {
             make.right.equalTo(-12)
             make.left.equalTo(12)
         }
+        
+        addSubview(filterBar)
+        filterBar.delegate = self
+        filterBar.snp.makeConstraints { (make) in
+            make.left.right.bottom.equalTo(0)
+            make.height.equalTo(40)
+        }
+        
+        addSubview(underlineView)
+        underlineView.snp.makeConstraints { (make) in
+            make.left.bottom.equalTo(0)
+            make.height.equalTo(2)
+            make.width.equalTo(frame.width/CGFloat(ProfileFilterOptions.allCases.count))
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -135,5 +158,19 @@ class ProfileHeader: UICollectionReusableView {
     
     @objc func handleEditProfileFollowButtonPressed() {
         
+    }
+}
+
+// MARK: - ProfileFilterViewDelegate
+
+extension ProfileHeader: ProfileFilterViewDelegate {
+    
+    func animateUnderlineView(_ view: ProfileFilterView, didSelect indexPath: IndexPath) {
+        guard let cell = view.collectionView.cellForItem(at: indexPath) as? ProfileFilterCell else { return }
+        
+        let xPosition = cell.frame.origin.x
+        UIView.animate(withDuration: 0.3) {
+            self.underlineView.frame.origin.x = xPosition
+        }
     }
 }
