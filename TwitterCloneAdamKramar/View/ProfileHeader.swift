@@ -9,9 +9,23 @@
 import UIKit
 import SnapKit
 
+protocol ProfileHeaderDelegate: class {
+    
+    func didTapBackButton(_ header: ProfileHeader)
+    func didTapEditProfileFollow(_ header: ProfileHeader)
+}
+
 class ProfileHeader: UICollectionReusableView {
     
     // MARK: - Properties
+    
+    weak var delegate: ProfileHeaderDelegate?
+    
+    var user: User? {
+        didSet {
+            configure()
+        }
+    }
     
     private let filterBar = ProfileFilterView()
     
@@ -62,16 +76,14 @@ class ProfileHeader: UICollectionReusableView {
     private let fullnameLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 16)
-        label.text = "Full name"
           
         return label
     }()
     
     private let usernameLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 16)
+        label.font = UIFont.systemFont(ofSize: 14)
         label.textColor = .lightGray
-        label.text = "@username"
         
         return label
     }()
@@ -90,6 +102,24 @@ class ProfileHeader: UICollectionReusableView {
         view.backgroundColor = .twitterBlue
         
         return view
+    }()
+    
+    private let followingLabel: UILabel = {
+        let label = UILabel()
+        let followTap = UITapGestureRecognizer(target: self, action: #selector(handleFollowingPressed))
+        label.isUserInteractionEnabled = true
+        label.addGestureRecognizer(followTap)
+        
+        return label
+    }()
+    
+    private let followersLabel: UILabel = {
+        let label = UILabel()
+        let followersTap = UITapGestureRecognizer(target: self, action: #selector(handleFollowersPressed))
+        label.isUserInteractionEnabled = true
+        label.addGestureRecognizer(followersTap)
+        
+        return label
     }()
     
     // MARK: - Lifecycle
@@ -131,6 +161,16 @@ class ProfileHeader: UICollectionReusableView {
             make.left.equalTo(12)
         }
         
+        let userFollowStack = UIStackView(arrangedSubviews: [followingLabel, followersLabel])
+        userFollowStack.axis = .horizontal
+        userFollowStack.spacing = 8
+        userFollowStack.distribution = .fillEqually
+        addSubview(userFollowStack)
+        userFollowStack.snp.makeConstraints { (make) in
+            make.top.equalTo(userInfoStack.snp.bottom).offset(8)
+            make.left.equalTo(12)
+        }
+        
         addSubview(filterBar)
         filterBar.delegate = self
         filterBar.snp.makeConstraints { (make) in
@@ -153,11 +193,36 @@ class ProfileHeader: UICollectionReusableView {
     // MARK: - Handlers
     
     @objc func handleBackButtonPressed() {
-        
+        delegate?.didTapBackButton(self)
     }
     
     @objc func handleEditProfileFollowButtonPressed() {
+        delegate?.didTapEditProfileFollow(self)
+    }
+    
+    @objc func handleFollowingPressed() {
         
+    }
+    
+    @objc func handleFollowersPressed() {
+        
+    }
+    
+    // MARK: - Helpers
+    
+    private func configure() {
+        guard let user = user else { return }
+        let viewModel = ProfileHeaderViewModel(user: user)
+        
+        profileImageView.sd_setImage(with: user.profileImageUrl)
+        
+        editProfileFollowButton.setTitle(viewModel.actionButtonTitle, for: .normal)
+        
+        fullnameLabel.text = user.fullname
+        usernameLabel.text = viewModel.usernameString
+        
+        followingLabel.attributedText = viewModel.followingString
+        followersLabel.attributedText = viewModel.followersString
     }
 }
 
