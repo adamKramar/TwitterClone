@@ -16,6 +16,7 @@ struct K {
     static let REF_USER_TWEETS = K.DB_REF.child("user-tweets")
     static let REF_FOLLOWERS = K.DB_REF.child("user-followers")
     static let REF_FOLLOWING = K.DB_REF.child("user-following")
+    static let REF_TWEET_REPLIES = K.DB_REF.child("tweet-replies")
     
     static let STORAGE_REF = Storage.storage().reference()
     static let STORAGE_PROFILE_IMAGES = K.STORAGE_REF.child("profile_images")
@@ -25,6 +26,7 @@ struct K {
         static let PROFILE_FILTER_CELL_ID = "profileFilterCellID"
         static let PROFILE_HEADER_ID = "profileHeaderID"
         static let USER_CELL_ID = "userCellID"
+        static let TWEET_HEADER_ID = "tweetHeaderID"
     }
     
     struct DB {
@@ -54,6 +56,8 @@ struct K {
         static let RETWEET_ICON = "retweet"
         static let LIKE_ICON = "like"
         static let SHARE_ICON = "share"
+        //Tweet Header
+        static let OPTION_ICON = "down_arrow_24pt"
     }
     
 }

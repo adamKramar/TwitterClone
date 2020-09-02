@@ -11,6 +11,7 @@ import UIKit
 protocol TweetCellDelegate: class {
     
     func didTapProfileImage(_ cell: TweetCell)
+    func didTapReplay(_ cell: TweetCell)
 }
 
 class TweetCell: UICollectionViewCell {
@@ -133,7 +134,7 @@ class TweetCell: UICollectionViewCell {
     // MARK: - Handlers
     
     @objc func handleCommentTapped() {
-        
+        delegate?.didTapReplay(self)
     }
     
     @objc func handleRetweetTapped() {

@@ -12,7 +12,7 @@ struct TweetService {
     
     static let shared = TweetService()
     
-    func uploadTweet(caption: String, completition: @escaping(DatabaseCompletition)) {
+    func uploadTweet(caption: String, type: UploadTweetConfiguration, completition: @escaping(DatabaseCompletition)) {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
         let ts = Int(NSDate().timeIntervalSince1970)
@@ -21,12 +21,15 @@ struct TweetService {
                       K.DB.F_LIKES: 0,
                       K.DB.F_RETWEETS: 0,
                       K.DB.F_CAPTION: caption] as [String: Any]
-        
-        let ref = K.REF_TWEETS.childByAutoId()
-        
-        ref.updateChildValues(values) { (error, dbRef) in
-            guard let tweetID = ref.key else { return }
-            K.REF_USER_TWEETS.child(uid).updateChildValues([tweetID: 1], withCompletionBlock: completition)
+                
+        switch type {
+        case .tweet:
+            K.REF_TWEETS.childByAutoId().updateChildValues(values) { (error, ref) in
+                guard let tweetID = ref.key else { return }
+                K.REF_USER_TWEETS.child(uid).updateChildValues([tweetID: 1], withCompletionBlock: completition)
+            }
+        case .reply(let tweet):
+            K.REF_TWEET_REPLIES.child(tweet.tweetID).childByAutoId().updateChildValues(values, withCompletionBlock: completition)
         }
     }
     
@@ -62,6 +65,23 @@ struct TweetService {
                     completition(tweets)
                 }
             }
+        }
+    }
+    
+    func fetchReplies(forTweet tweet: Tweet, completition: @escaping([Tweet]) -> ()) {
+        
+        var tweets = [Tweet]()
+        
+        K.REF_TWEET_REPLIES.child(tweet.tweetID).observe(.childAdded) { (snapshot) in
+            guard let dictionary = snapshot.value as? [String: Any] else { return }
+            guard let uid = dictionary[K.DB.F_UID] as? String else { return }
+            let tweetID = snapshot.key
+            
+            UserService.shared.fetchUser(uid: uid) { (user) in
+               let tweet = Tweet(user: user ,tweetID: tweetID, dictionary: dictionary)
+               tweets.append(tweet)
+               completition(tweets)
+           }
         }
     }
 }

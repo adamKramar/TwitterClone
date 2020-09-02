@@ -79,7 +79,7 @@ class MainTabController: UITabBarController {
     
     @objc func handleActionButtonPressed() {
         guard let user = user else { return }
-        let viewController = UploadTweetViewController(user: user)
+        let viewController = UploadTweetViewController(user: user, config: .tweet)
         let nav = UINavigationController(rootViewController: viewController)
         present(nav, animated: true, completion: nil)
     }
@@ -91,7 +91,7 @@ class MainTabController: UITabBarController {
         view.addSubview(actionButton)
         actionButton.snp.makeConstraints { (make) in
             make.width.height.equalTo(56)
-            make.bottom.equalTo(-64)
+            make.bottom.equalTo(tabBar.snp.top).offset(-12)
             make.right.equalTo(-16)
         }
         actionButton.layer.cornerRadius = 56 / 2

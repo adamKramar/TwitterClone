@@ -8,8 +8,6 @@
 
 import Firebase
 
-typealias DatabaseCompletition = ((Error?, DatabaseReference) -> ())
-
 struct UserService {
     
     static let shared = UserService()

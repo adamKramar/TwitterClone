@@ -26,6 +26,17 @@ struct TweetViewModel {
         return formatter.string(from: tweet.ts, to: now) ?? "0s"
     }
     
+    var headerTs: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "h:mm a - dd/MM/yyyy"
+        
+        return formatter.string(from: tweet.ts)
+    }
+    
+    var usernameText: String {
+        return "@\(user.username)"
+    }
+    
     var userInfoText: NSAttributedString {
         let title = NSMutableAttributedString(string: user.fullname,
                                               attributes: [.font: UIFont.boldSystemFont(ofSize: 14)])
@@ -40,8 +51,28 @@ struct TweetViewModel {
         return title
     }
     
+    var retweetAttributedString: NSAttributedString {
+        return Utilities().attributedText(withValue: tweet.retweetCount, text: " Retweets")
+    }
+    
+    var likesAttributedString: NSAttributedString {
+       return Utilities().attributedText(withValue: tweet.likes, text: " Likes")
+    }
+    
     init(tweet: Tweet) {
         self.tweet = tweet
         self.user = tweet.user
+    }
+    
+    func size(width: CGFloat) -> CGSize {
+        let measurmentLabel = UILabel()
+        measurmentLabel.text = tweet.caption
+        measurmentLabel.numberOfLines = 0
+        measurmentLabel.lineBreakMode = .byWordWrapping
+        measurmentLabel.translatesAutoresizingMaskIntoConstraints = false
+        measurmentLabel.widthAnchor.constraint(equalToConstant: width).isActive = true
+        let size = measurmentLabel.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
+        
+        return size
     }
 }

@@ -17,7 +17,6 @@ class CaptionTextView: UITextView {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 16)
         label.textColor = .darkGray
-        label.text = "What's happening?"
         
         return label
     }()
@@ -32,7 +31,7 @@ class CaptionTextView: UITextView {
         isScrollEnabled = false
         
         snp.makeConstraints { (make) in
-            make.height.equalTo(300)
+            make.height.equalTo(100)
         }
         
         addSubview(placeholderLabel)

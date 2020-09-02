@@ -96,6 +96,11 @@ extension FeedViewController {
         
         return cell
     }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let viewController = TweetViewController(tweet: tweets[indexPath.row])
+        navigationController?.pushViewController(viewController, animated: true)
+    }
 }
 
 // MARK: - UICollectionViewFlowLayout
@@ -103,13 +108,24 @@ extension FeedViewController {
 extension FeedViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: view.frame.width, height: 120)
+        let viewModel = TweetViewModel(tweet: tweets[indexPath.row])
+        let height = viewModel.size(width: view.frame.width).height
+        return CGSize(width: view.frame.width, height: height + 72)
     }
 }
 
 // MARK: - TweetCellDelegate
 
 extension FeedViewController: TweetCellDelegate {
+    
+    func didTapReplay(_ cell: TweetCell) {
+        guard let tweet = cell.tweet else { return }
+        let viewController = UploadTweetViewController(user: tweet.user, config: .reply(tweet))
+        let nav = UINavigationController(rootViewController: viewController)
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: true, completion: nil)
+    }
+    
     
     func didTapProfileImage(_ cell: TweetCell) {
         guard let user = cell.tweet?.user else { return }

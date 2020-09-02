@@ -89,7 +89,6 @@ extension ProfileViewController {
         header.delegate = self
         return header
     }
-    
 }
 
 // MARK: UICollectionViewDelegate, UICollectionViewDataSource

@@ -28,12 +28,12 @@ struct ProfileHeaderViewModel {
     
     var followingString: NSAttributedString? {
         let following = user.stats?.following ?? 0
-        return attributedText(withValue: following, text: " following")
+        return Utilities().attributedText(withValue: following, text: " following")
     }
     
     var followersString: NSAttributedString? {
         let followers = user.stats?.followers ?? 0
-        return attributedText(withValue: followers, text: " followers")
+        return Utilities().attributedText(withValue: followers, text: " followers")
     }
     
     var usernameString: String {
@@ -57,15 +57,5 @@ struct ProfileHeaderViewModel {
     
     init(user: User) {
         self.user = user
-    }
-    
-    fileprivate func attributedText(withValue value: Int, text: String) -> NSAttributedString {
-        let attributedTitle = NSMutableAttributedString(string: "\(value)", attributes: [.font: UIFont.boldSystemFont(ofSize: 14)])
-        
-        attributedTitle.append(NSAttributedString(string: text, attributes: [
-            .font: UIFont.systemFont(ofSize: 14),
-            .foregroundColor: UIColor.lightGray]))
-        
-        return attributedTitle
     }
 }
